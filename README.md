@@ -2,29 +2,30 @@
 
 Kayapa Sanat Akademisi için geliştirilmiş yönetim sistemi API'si. Bu sistem, sanat akademisinin öğrenci takibi, ders programı yönetimi, ödeme takibi ve bildirim yönetimi gibi temel ihtiyaçlarını karşılamak üzere tasarlanmıştır.
 
-## Özellikler
+## 🚀 Özellikler
 
 - 👥 **Kullanıcı Yönetimi**
-  - Rol tabanlı yetkilendirme (Admin, Öğretmen, Öğrenci, Veli)
-  - Güvenli kimlik doğrulama
-  - Kullanıcı profil yönetimi
+  - Rol tabanlı yetkilendirme (Admin, Öğrenci)
+  - JWT tabanlı kimlik doğrulama
+  - Öğrenci kayıt ve giriş işlemleri
+  - Kullanıcı durumu takibi (Aktif/Pasif)
 
-## Teknolojiler
+## 🛠 Teknolojiler
 
 - **Backend Framework**: [NestJS](https://nestjs.com/)
 - **Veritabanı**: PostgreSQL
 - **ORM**: Prisma
-- **Containerization**: Docker
-- **API Documentation**: Swagger/OpenAPI
-- **Authentication**: JWT
+- **Kimlik Doğrulama**: JWT
+- **Validasyon**: class-validator
+- **API Dökümantasyonu**: Swagger (Yakında)
 
-## Gereksinimler
+## ⚙️ Gereksinimler
 
 - Node.js (v18 veya üzeri)
-- Docker ve Docker Compose
+- PostgreSQL
 - npm veya yarn
 
-## Kurulum
+## 📦 Kurulum
 
 1. Projeyi klonlayın
 ```bash
@@ -43,14 +44,24 @@ cp .env.example .env
 # .env dosyasını kendi ortamınıza göre düzenleyin
 ```
 
-4. Docker container'ını başlatın
+4. Veritabanını oluşturun
 ```bash
-docker-compose up -d
+# PostgreSQL veritabanını oluşturun
+# .env dosyasındaki DATABASE_URL'i güncelleyin
+
+# Migration'ları çalıştırın
+npx prisma migrate dev
 ```
 
-5. Veritabanı migration'larını çalıştırın
+5. (Opsiyonel) Admin kullanıcısı oluşturun
 ```bash
-npx prisma migrate dev
+# Seed script ile (önerilen)
+npx prisma db seed
+
+# VEYA
+
+# Prisma Studio ile manuel olarak (sadece development)
+npx prisma studio
 ```
 
 6. Uygulamayı başlatın
@@ -63,30 +74,25 @@ npm run build
 npm run start:prod
 ```
 
-## Geliştirme
+## 🔐 Güvenlik
 
-### Branch Stratejisi
+- Şifreler bcrypt ile hashlenir
+- JWT token kullanılır
+- Role-based access control (RBAC) uygulanır
+- Request validation yapılır
+- Global error handling mevcuttur
+
+## 🌳 Branch Stratejisi
 
 - `developer`: Aktif geliştirme branch'i
 - `test`: Test ortamı
 - `production`: Canlı ortam
 
-### Veritabanı Yönetimi
+## 📝 API Dokümantasyonu
 
-Prisma ORM kullanarak veritabanı işlemlerini yönetiyoruz:
+Detaylı API dokümantasyonu için [API.md](docs/API.md) dosyasına bakınız.
 
-```bash
-# Şema değişikliklerini veritabanına uygulama
-npx prisma migrate dev
-
-# Sadece production ortamında migration'ları uygulama
-npx prisma migrate deploy
-
-# Prisma Studio'yu başlatma (veritabanı yönetim arayüzü)
-npx prisma studio
-```
-
-## Katkıda Bulunma
+## 🤝 Katkıda Bulunma
 
 1. Bu repository'yi fork edin
 2. Feature branch'i oluşturun (`git checkout -b feature/amazing-feature`)
@@ -94,10 +100,10 @@ npx prisma studio
 4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
 5. Pull Request oluşturun
 
-## Lisans
+## 📄 Lisans
 
 Bu proje [MIT lisansı](LICENSE) ile lisanslanmıştır.
 
-## İletişim
+## 📞 İletişim
 
 Proje Yöneticisi - [@YigitcanOzturk](https://github.com/Yigitcan-oztrk)
