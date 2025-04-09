@@ -12,9 +12,10 @@ Bu proje, Kayapa Sanat Akademisi için geliştirilmiş bir yönetim sistemi API'
    - Git yapılandırması (.gitignore) tamamlandı
    - Temel bağımlılıklar yüklendi
 
-2. Veritabanı Bağlantısı
-   - PostgreSQL için TypeORM entegrasyonu yapıldı
-   - Veritabanı konfigürasyonu için ConfigModule entegre edildi
+2. Veritabanı Yapılandırması
+   - PostgreSQL için Docker container yapılandırıldı
+   - Prisma ORM entegrasyonu yapıldı
+   - Temel veritabanı modelleri oluşturuldu
 
 3. API Temel Ayarları
    - Global API prefix (/api) tanımlandı
@@ -30,11 +31,10 @@ Bu proje, Kayapa Sanat Akademisi için geliştirilmiş bir yönetim sistemi API'
 
 ### Yapılacaklar
 
-1. Veritabanı Modelleri
-   - [ ] Öğrenci/Veli modeli
-   - [ ] Ders modeli
-   - [ ] Ödeme modeli
-   - [ ] Bildirim modeli
+1. Veritabanı İlişkileri
+   - [ ] User-Course ilişkisi
+   - [ ] User-Payment ilişkisi
+   - [ ] User-Notification ilişkisi
 
 2. API Endpoint'leri
    - [ ] Kullanıcı yönetimi (Users)
@@ -48,34 +48,12 @@ Bu proje, Kayapa Sanat Akademisi için geliştirilmiş bir yönetim sistemi API'
    - [ ] Rol tabanlı yetkilendirme
    - [ ] Şifreleme ve güvenlik önlemleri
 
-4. Bildirim Sistemi
-   - [ ] Email bildirimleri
-   - [ ] Ödeme hatırlatmaları
-   - [ ] Ders programı bildirimleri
-
-## Proje Yapısı
-
-```
-src/
-├── users/               # Kullanıcı yönetimi
-├── auth/               # Kimlik doğrulama
-├── courses/            # Ders yönetimi
-├── payments/           # Ödeme takibi
-└── notifications/      # Bildirim sistemi
-
-Her modül içerisinde:
-├── dto/               # Veri transfer objeleri
-├── entities/          # Veritabanı modelleri
-├── controllers/       # API endpoint'leri
-└── services/         # İş mantığı
-```
-
 ## Kurulum
 
 ### Gereksinimler
 
 - Node.js (v18 veya üzeri)
-- PostgreSQL (v14 veya üzeri)
+- Docker ve Docker Compose
 - npm veya yarn
 
 ### Adımlar
@@ -97,13 +75,17 @@ cp .env.example .env
 # .env dosyasını düzenleyin
 ```
 
-4. Veritabanını oluşturun
+4. Docker container'ını başlatın
 ```bash
-# PostgreSQL'de veritabanı oluşturun
-createdb kst_db
+docker-compose up -d
 ```
 
-5. Uygulamayı çalıştırın
+5. Veritabanı migration'larını çalıştırın
+```bash
+npx prisma migrate dev
+```
+
+6. Uygulamayı çalıştırın
 ```bash
 # Geliştirme modu
 npm run start:dev
@@ -113,36 +95,53 @@ npm run build
 npm run start:prod
 ```
 
-## Ortam Değişkenleri
+## Veritabanı Yapılandırması
 
-```env
-# Uygulama
-PORT=3000
-NODE_ENV=development
+### Docker ile PostgreSQL
 
-# Veritabanı
-DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=postgres
-DB_PASSWORD=postgres
-DB_DATABASE=kst_db
+```bash
+# Veritabanını başlatma
+docker-compose up -d
+
+# Veritabanını durdurma
+docker-compose down
+
+# Veritabanını ve volume'ları silme (temiz başlangıç için)
+docker-compose down -v
 ```
 
-## Mevcut Bağımlılıklar
+### Veritabanı Bağlantı Bilgileri
 
-```json
-{
-  "@nestjs/common": "^10.0.0",
-  "@nestjs/config": "^3.2.0",
-  "@nestjs/core": "^10.0.0",
-  "@nestjs/platform-express": "^10.0.0",
-  "@nestjs/typeorm": "^10.0.2",
-  "class-transformer": "^0.5.1",
-  "class-validator": "^0.14.1",
-  "pg": "^8.11.3",
-  "typeorm": "^0.3.20"
-}
+- Host: localhost
+- Port: 5432
+- Database: kst_db
+- Username: johndoe
+- Password: 123456
+
+### Prisma ORM
+
+#### Prisma Komutları
+
+```bash
+# Şema değişikliklerini veritabanına uygulama
+npx prisma migrate dev
+
+# Sadece production ortamında migration'ları uygulama
+npx prisma migrate deploy
+
+# Prisma Client'ı güncelleme
+npx prisma generate
+
+# Veritabanı GUI'sini açma
+npx prisma studio
 ```
+
+#### Veritabanı Modelleri
+
+- **User**: Kullanıcı yönetimi (öğrenci, öğretmen, veli, admin)
+- **Course**: Ders ve program yönetimi
+- **Payment**: Ödeme takibi
+- **Notification**: Bildirim sistemi
 
 ## Lisans
 
